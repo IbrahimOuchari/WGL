@@ -1,0 +1,45 @@
+<odoo>
+
+    <record id="mrp_bom_custom_cost_inherited" model="ir.ui.view">
+        <field name="name">mrp.bom_custom_cost_inherited</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[contains(@class, 'o_row')]" position="after">
+                <label for="is_calculated" string="Calculer Coût"/>
+                <div class="o_row">
+                    <field name="is_calculated"/>
+                </div>
+                <label for="total_cost" string="Total des coût"/>
+                <div class="o_row">
+                    <field name="total_cost"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//field[@name='bom_line_ids']/tree/field[@name='product_qty']"
+                   position="after">
+                <field name="standard_price_related_template" optional="1"/>
+                <field name="standard_price_related_product" optional="1"/>
+                <field name="standard_price_calculated" sum="Total des coûts"/>
+                <field name="cost_product" string="Null" optional="hide"/>
+
+            </xpath>
+        </field>
+    </record>
+    <record id="mrp_bom_custom_cost_inherited_tree" model="ir.ui.view">
+        <field name="name">mrp.bom_custom_cost_inherited_tree</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='code']" position="after">
+                <field name="total_cost"/>
+                <field name="is_calculated" string="Calculer Coût"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

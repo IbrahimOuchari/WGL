@@ -1,0 +1,10 @@
+<odoo>
+<!--    <record id="margin_brute" model="res.groups">-->
+<!--        <field name="name">Marge Brute</field>-->
+<!--    </record>-->
+
+
+       <record id="forcee_facturation_livraison" model="res.groups">
+        <field name="name">Accès Forcée Facturation/Livraison</field>
+    </record>
+</odoo>

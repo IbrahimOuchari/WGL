@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="mrp_bom_product_cost" model="ir.ui.view">
+        <field name="name">Coût et Marges des Produits par Nomenclature</field>
+        <field name="model">mrp.bom</field>
+        <field name="arch" type="xml">
+             <tree string="bom cost">
+                <field name="product_tmpl_id" string="Article"/>
+                <field name="total_cost" string="Coût Nomenclature"/>
+                <field name="cost_product" string="Coût de Revient Article"/>
+                <field name="price_unit" string="Prix de Vente"/>
+                <field name="marge_product" string="Marge Article"/>
+
+            </tree>
+        </field>
+    </record>
+
+     <record id="action_mrp_bom_product_cost" model="ir.actions.act_window">
+        <field name="name">Coût et Marges des Produits par Nomenclature</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.bom</field>
+        <field name="view_id" ref="mrp_bom_product_cost"/>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+</odoo>

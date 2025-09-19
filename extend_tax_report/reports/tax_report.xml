@@ -1,0 +1,186 @@
+<odoo>
+    <data>
+
+        <template id="accounting_pdf_reports.report_tax">
+            <t t-call="web.html_container">
+                <t t-set="data_report_margin_top" t-value="12"/>
+                <t t-set="data_report_header_spacing" t-value="9"/>
+                <t t-set="data_report_dpi" t-value="110"/>
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <h3>Tax Report</h3>
+                        <div class="row">
+                            <table class="table table-sm table-reports" style="border: 0px solid black;width: 100%;">
+
+                                <div class="col-4">
+                                    <strong>Company:</strong>
+                                    <p t-esc="res_company.name"/>
+                                </div>
+                                <div class="col-4">
+                                    <t>
+                                        <strong>Date from :</strong>
+                                        <span t-esc="data['date_from']"/>
+                                    </t>
+                                    <br/>
+                                    <t>
+                                        <strong>Date to :</strong>
+                                        <span t-esc="data['date_to']"/>
+                                    </t>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Target Moves:</strong>
+                                    <t>
+                                        <span t-if="data['target_move'] == 'all'">All Entries</span>
+                                        <span t-if="data['target_move'] == 'posted'">All Posted Entries</span>
+                                    </t>
+                                </div>
+                            </table>
+                        </div>
+                        <table class="table table-sm table-reports" style="border: 0px solid black;width: 100%;">
+                            <tr align="left">
+                                <th>Sale</th>
+                                <th>Net</th>
+                                <th>Tax</th>
+                            </tr>
+
+                            <t t-foreach="lines['sale']" t-as="line">
+                                <tr align="left">
+                                    <td style="font-weight:bold">
+                                        <span t-esc="line.get('name')"/>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        <span t-att-style="style" t-esc="line.get('net')"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        <span t-att-style="style" t-esc="line.get('tax')"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Date</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Source</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Debit</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Credit</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Balance</span>
+                                    </td>
+                                </tr>
+                                <tr t-foreach="line['vals']" t-as="tax_line">
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[3]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[0]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[1]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[2]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[1]-tax_line[2]"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <br/>
+                            <tr align="left">
+                                <td>
+                                    <strong>Purchase</strong>
+                                </td>
+                                <td>
+                                    <strong>Net</strong>
+                                </td>
+                                <td>
+                                    <strong>Tax</strong>
+                                </td>
+                            </tr>
+                            <t align="left" t-foreach="lines['purchase']" t-as="line">
+                                <tr>
+                                    <td>
+                                        <span t-esc="line.get('name')"/>
+                                    </td>
+                                    <td>
+                                        <span t-att-style="style" t-esc="line.get('net')"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <td>
+                                        <span t-att-style="style" t-esc="line.get('tax')"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Date</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Source</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Debit</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Credit</span>
+                                    </td>
+                                    <td style="font-weight:bold">
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span>Balance</span>
+                                    </td>
+                                </tr>
+                                <tr t-foreach="line['vals']" t-as="tax_line">
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[3]"/>
+                                    </td>
+
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[0]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[1]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[2]"/>
+                                    </td>
+                                    <td>
+                                        &amp;nbsp;&amp;nbsp;&amp;nbsp;
+                                        <span t-esc="tax_line[1]-tax_line[2]"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

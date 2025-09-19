@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="mrp_bom_line_cost" model="ir.ui.view">
+        <field name="name">Coût des Nomenclatures</field>
+        <field name="model">mrp.bom.line</field>
+        <field name="arch" type="xml">
+            <tree string="bom Lines" create="false">
+                <field name="bom_id" string="Nomenclature"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="standard_price_related_template" string="Coût Unitaire"/>
+                <field name="standard_price_calculated"/>
+                <field name="active_product" optional="hide"/>
+                <field name="cost_product" optional="hide"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_bom_line_cost_search" model="ir.ui.view">
+      <field name="name">Coût des Nomenclatures</field>
+        <field name="model">mrp.bom.line</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Recherche">
+                    <field name="product_id" string="Article" filter_domain="[('product_id', 'ilike', self)"/>
+                    <field name="bom_id" string="Nomenclature" filter_domain="['|', ('bom_id', 'ilike', self), ('product_tmpl_id', 'ilike', self)]"/>
+
+                <separator/>
+                <filter name="inactif" string="Article Archivé" domain="[('active_product', '=', False)]"/>
+
+                <group expand="0" string="Regrouper par">
+                    <filter string="Article" name="product_id" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="Client" string="Nomenclature" domain="[]" context="{'group_by': 'bom_id'}"/>
+                    <filter string="Statut Article" name="active_product" domain="[]" context="{'group_by': 'active_product'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mrp_bom_line_cost" model="ir.actions.act_window">
+        <field name="name">Lignes de BOM</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.bom.line</field>
+        <field name="view_id" ref="mrp_bom_line_cost"/>
+        <field name="view_mode">tree,pivot</field>
+        <field name="search_view_id" ref="mrp_bom_line_cost_search"/>
+    </record>
+
+
+</odoo>

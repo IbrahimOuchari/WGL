@@ -1,0 +1,21 @@
+<odoo>
+    <record id="group_use_product_description_per_so_line" model="res.groups">
+        <field name="name">Utiliser la description de l'article seulement dans le BC Vente</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+    </record>
+
+    <!-- Multi - Company Rules -->
+
+    <record model="ir.rule" id="sale_devis_comp_rule">
+        <field name="name">Sales Devis multi-company</field>
+        <field name="model_id" ref="model_sale_devis"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="sale_devis_line_comp_rule">
+        <field name="name">Sales Devis Line multi-company</field>
+        <field name="model_id" ref="model_sale_devis_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

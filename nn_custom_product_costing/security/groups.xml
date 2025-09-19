@@ -1,0 +1,6 @@
+<odoo>
+    <record id="margin_product" model="res.groups">
+        <field name="name">Marge Produit</field>
+    </record>
+
+</odoo>

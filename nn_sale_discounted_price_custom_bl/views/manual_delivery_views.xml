@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <!-- Inherit the manual delivery wizard form view -->
+        <record id="view_manual_delivery_wizard_form_inherit" model="ir.ui.view">
+            <field name="name">manual.delivery.wizard.form.inherit</field>
+            <field name="model">manual.delivery</field>
+            <field name="inherit_id" ref="BMG_stock_starter.manual_delivery_wizard_form"/>
+            <field name="arch" type="xml">
+                <!-- Find the position after the quantity field -->
+                <xpath expr="//field[@name='quantity']" position="after">
+                    <field name="pu_remise" string="P.U Après Remise"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

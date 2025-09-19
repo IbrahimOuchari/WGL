@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="report_etiquette_print_wg" model="report.paperformat">
+            <field name="name">Etiquette</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">110</field> <!-- 50% of 210 -->
+            <field name="page_width">50</field> <!-- 50% of 100 -->
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">10</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="action_template_etiquette_print" model="ir.actions.report">
+            <field name="name">Etiquette Réception</field>
+            <field name="model">mrp.production</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">nn_custom_product_costing.report_template_etiquette_print_new</field>
+            <field name="report_file">nn_custom_product_costing.report_template_etiquette_print_new</field>
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="report_etiquette_print_wg"/>
+        </record>
+
+        <template id="report_template_etiquette_print_new">
+            <t t-call="web.html_container">
+                <div class="page">
+
+                    <t t-foreach="docs" t-as="mrp">
+                        <t t-foreach="mrp.label_management_ids" t-as="label">
+                            <div style="display: inline-block; width: 100%;">
+                                <div style="display: inline-block; width: 100%;">
+                                    <div style="text-align: center;">
+
+
+                                    </div>
+                                    <table class="table table-condensed"
+                                           style="width: 100%;height:80%; border-collapse: collapse; font-size: 8px; table-layout: fixed;">
+
+                                        <tr>
+
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px; height:20%;width: 100%;text-align: center;">
+                                                <p style="font-weight: bold;">Client :
+                                                    <span t-esc="mrp.product_id.name"/>
+                                                </p>
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr>
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px; height:20%;width: 100%;text-align: center;">
+                                                <p style="font-weight: bold;">QUANTITÉ :
+                                                    <span t-esc="label.quantity_per_batch"
+                                                          t-options='{"widget": "float", "precision": 0}'/>
+                                                </p>
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px;  width: 100%;text-align:center;">
+                                                <p style="font-weight: bold;">STATUT:</p>
+                                                <span t-esc="label.state.upper()"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px; width: 100%;text-align: center;">
+                                                <p style="font-weight: bold;">DATE:</p>
+                                                <span t-esc="label.date"/>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px; width: 100%;text-align: center;">
+                                                <p style="font-weight: bold;">N°OF:</p>
+                                                <span t-esc="mrp.name"/>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"
+                                                style="border: 1px solid black; padding: 3px;  width: 100%;text-align: center;">
+                                                <p style="font-weight: bold;">ID-ETQ:</p>
+                                                <span t-esc="label.name"/>
+                                            </td>
+                                        </tr>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+
+    </data>
+</odoo>

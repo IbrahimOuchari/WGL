@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_sale_order_form_custom" model="ir.ui.view">
+        <field name="name">sale.order.form.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add a field for 'Discounted Unit Price' in order lines -->
+            <xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="after">
+                <field name="pu_remise"/>
+
+            </xpath>
+
+
+        </field>
+    </record>
+    <record id="view_sale_order_line_tree_custom" model="ir.ui.view">
+        <field name="name">sale.order.line.tree.custom</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="BMG_sale_starter.view_sale_order_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='price_unit']" position="after">
+                <field name="pu_remise"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

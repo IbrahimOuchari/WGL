@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_new_purchase_order_form" model="ir.ui.view">
+        <field name="name">view.new.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Archivage BC Achat -->
+
+             <xpath expr="//div[@name='button_box']" position="after">
+                <widget name="web_ribbon" title="Archivé"
+                    bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="toggle_active" type="object" string="Actif"
+                        attrs="{'invisible': [('state','in',['brouillon'])]}"
+                        class="oe_stat_button" icon="fa-archive">
+                    <field name="active" widget="boolean_toggle" string="Actif"
+                           options='{"terminology": "archive"}'/>
+                </button>
+            </xpath>
+
+
+            <!-- modification header -->
+            <xpath expr="/form/header/field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">brouillon,to approve,purchase,done</attribute>
+            </xpath>
+
+            <xpath expr="//header//button[@name='action_rfq_send']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header//button[@name='print_quotation']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form//header//button[@name='button_draft']" position="replace">
+                <button string="Remettre en Brouillon" states="cancel" name="button_draft_achat" type="object"/>
+            </xpath>
+            <xpath expr="//header//button[@name='button_confirm']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header//button[@name='button_confirm']" position="after">
+                <button name="button_confirm_achat" string="Confirmer BC" class="btn-primary" type="object"
+                        attrs="{'invisible': [('state', 'not in', [('brouillon')])]}"/>
+            </xpath>
+
+            <xpath expr="//sheet//field[@name='date_order']" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="widget">date</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='date_approve']" position="attributes">
+                <attribute name="invisible">0</attribute>
+                <attribute name="widget">date</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='date_planned']" position="attributes">
+                <attribute name="widget">date</attribute>
+            </xpath>
+            <!-- fin -->
+            <!-- modification info BC -->
+
+            <xpath expr="//sheet//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+            </xpath>
+            <xpath expr="//sheet//field[@name='partner_id']" position="after">
+                <field name="rfq_seq"/>
+            </xpath>
+
+
+            <!-- fin -->
+            <!-- modification page ligne de commande -->
+
+            <xpath expr="//sheet//notebook//page//tree//field[@name='product_id']"
+                   position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+            </xpath>
+            <!-- fin -->
+
+            <!-- modification page autre information -->
+            <xpath expr="//sheet//field[@name='partner_ref']"
+                   position="after">
+                <field name="user_id" position="move"/>
+                <field name="payment_term_id" position="move"/>
+
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']"
+                   position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- menu item -->
+    <menuitem id="purchase.menu_purchase_form_action"
+              name="Bon de Commande"
+              parent="purchase.menu_purchase_root"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              action="purchase.purchase_form_action"
+              sequence="10"/>
+
+    <menuitem id="purchase.menu_procurement_management_supplier_name"
+              name="Fournisseur"
+              parent="purchase.menu_purchase_root"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              action="account.res_partner_action_supplier"
+              sequence="15"/>
+
+    <menuitem id="purchase.menu_article_achat"
+              name="Articles"
+              parent="purchase.menu_purchase_root"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              sequence="20"/>
+
+    <menuitem id="purchase.menu_procurement_partner_contact_form"
+              name="Articles"
+              parent="purchase.menu_article_achat"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              action="purchase.product_normal_action_puchased"
+              sequence="20"/>
+
+    <menuitem id="purchase.product_product_menu"
+              name="Variantes d'Articles"
+              parent="purchase.menu_article_achat"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              action="purchase.product_product_action"
+              sequence="25"/>
+
+    <menuitem id="purchase.menu_product_pricelist_action2_purchase"
+              name="Prix Fournisseurs"
+              parent="purchase.menu_purchase_root"
+              groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+              action="product.product_supplierinfo_type_action"
+              sequence="30"/>
+
+    <delete model="ir.ui.menu" id="purchase.menu_purchase_rfq"/>
+
+</odoo>

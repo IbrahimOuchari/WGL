@@ -1,0 +1,50 @@
+<odoo>
+    <record id="product_template_tree_inherit" model="ir.ui.view">
+        <field name="name">product.template.tree.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='last_purchase_price']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='qty_available']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//tree/field[@name='virtual_available']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+
+            <xpath expr="//tree/field[@name='standard_price']" position="after">
+                <field name="marge_brute" groups="nn_custom_product_costing.margin_product"/>
+                <field name="decoration_danger" invisible="1"/>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">decoration_danger == True</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="product_template_form_margin_view" model="ir.ui.view">
+        <field name="name">product.template.form.margin.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='standard_price_uom']" position="after">
+                <field name="marge_brute"/>
+            </xpath>
+
+         <xpath expr="/form/sheet" position="before">
+             <field name="decoration_danger" invisible="1"/>
+                 <div
+                    class="alert alert-warning"
+                    role="alert"
+                    attrs="{'invisible': [('decoration_danger', '=', False)]}">
+                         Attention la marge de cet article est négative !
+                 </div>
+         </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="custom_account_journal_form" model="ir.ui.view">
+            <field name="name">custom.account.journal.form</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='advanced_settings']" position="after">
+                    <page name="retenu" string="Retenue à la source">
+                        <group>
+                    <field name="is_retenuachat" string="Retenue Achat"/>
+                    <field name="is_retenuvente" string="Retenue Vente"/>
+                        </group>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

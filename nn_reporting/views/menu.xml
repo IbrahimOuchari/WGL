@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <menuitem id="menu_report_manager"
+              name="Reporting"
+              web_icon="nn_reporting,static/description/icon_app.png"
+              sequence="300"
+              groups="nn_reporting.group_manager_report_id"/>
+
+<!--    Menu Anaylse des Ventes-->
+    <menuitem id="sale_analyse"
+              name="Analyse des Ventes"
+              parent="menu_report_manager"
+              sequence="10"/>
+     <menuitem
+            id="sale_order_line_menu"
+            name="Lignes de Commandes"
+            action="BMG_sale_starter.action_orders_lines"
+            parent="sale_analyse"
+            sequence="10"/>
+
+    <!--    Menu Analyse des produits-->
+    <menuitem id="product_analyse"
+              name="Analyse des produits"
+              parent="menu_report_manager"
+              sequence="20"/>
+
+      <menuitem
+            id="product_sale_cost"
+            name="Marge des Produits Finaux"
+            action="nn_reporting.action_product_sale_view_cost"
+            parent="product_analyse"
+            sequence="10"/>
+
+      <menuitem
+            id="bom_id_product_cost"
+            name="Coût par Nomenclature"
+            action="nn_reporting.action_mrp_bom_product_cost"
+            parent="product_analyse"
+            sequence="30"/>
+
+    <menuitem
+            id="bom_id_cost"
+            name="Lignes de Nomenclatures"
+            action="nn_reporting.action_mrp_bom_line_cost"
+            parent="product_analyse"
+            sequence="40"/>
+    <!--    End-->
+
+</odoo>

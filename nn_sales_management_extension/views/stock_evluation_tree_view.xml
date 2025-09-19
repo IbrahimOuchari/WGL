@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_product_analysis_tree_inherited" model="ir.ui.view">
+        <field name="name">view.product.analysis.tree</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="nn_custom_product_costing.view_product_analysis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='bom_cost']" position="after">
+                <field name="marge_brute" string="Marge Brute"  groups="nn_custom_product_costing.margin_product"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

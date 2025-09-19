@@ -1,0 +1,127 @@
+<odoo>
+    <data>
+        <record id="action_template_stock_picking" model="ir.actions.report">
+            <field name="name">Bon de livraison</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">nn_sale_discounted_price_custom_bl.report_bl_template</field>
+            <field name="report_file">nn_sale_discounted_price_custom_bl.report_bl_template</field>
+        </record>
+
+        <template id="report_bl_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="doc">
+                        <div style="text-align: center; margin-top: 7%; font-size: 200%; font-weight: bold; color: #AF0408;">
+                            <span t-field="doc.name"/>  <!-- BL Name -->
+                        </div>
+
+                        <div style="margin-left: 8%; margin-top: 3%;">
+                            <p>
+                                <b>Client :</b>
+                                <span t-field="doc.partner_id.name"/>
+                            </p>
+                            <p>
+                                <b>Adresse :</b>
+                                <span t-field="doc.partner_id.street"/>,
+                                <span t-field="doc.partner_id.city"/>,
+                                <span t-field="doc.partner_id.zip"/>,
+                                <span t-field="doc.partner_id.country_id.name"/>
+                            </p>
+                            <p t-if="doc.partner_id.vat">
+                                <b>Matricule Fiscale :</b>
+                                <span t-field="doc.partner_id.vat"/>
+                            </p>
+                            <p>
+                                <b>Numéro Bon de Commande :</b>
+                                <span t-field="doc.origin"/>
+                            </p>
+                            <p>
+                                <b> Transporteur :</b>
+                                <span t-field="doc.transporteur" />
+                            </p>
+                            <p>
+                                <b>Serie Voiture :</b>
+                                <span t-field="doc.serie_voiture"/>
+                            </p>
+                            <p>
+                                <b>Date prévu :</b>
+                                <span t-field="doc.date_done" t-options='{"widget": "date"}'/>
+                            </p>
+                        </div>
+
+                        <br/>
+
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Article</th>
+                                    <th class="text-center">Quantité</th>
+                                    <th class="text-center">Prix unitaire</th>
+                                    <th class="text-center">Prix Aprés Remise</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.move_ids_without_package"
+                                   t-as="line">  <!-- Assuming `move_ids_without_package` is the line items field -->
+                                    <tr>
+                                        <td class="text-center">
+                                            <span t-field="line.product_id.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.quantity_done"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.price_unit_move"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="line.pu_remise"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="clearfix" style="margin-top: 20px;">
+                            <table class="table table-sm" style="float: right; width: 30%;">
+                                <tr>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px;">
+                                        <strong>Montant HTVA:</strong>
+                                    </td>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px; text-align: right;">
+                                        <span t-field="doc.amount_untaxed"
+                                              t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px;">
+                                        <strong>TVA :</strong>
+                                    </td>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px; text-align: right;">
+                                        <span t-field="doc.amount_tax"
+                                              t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px;">
+                                        <strong>TTC :</strong>
+                                    </td>
+                                    <td style="font-weight: bold; border: 1px solid #000; padding: 5px; text-align: right;">
+                                        <span t-field="doc.amount_total"
+                                              t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 50px; float: right;">
+                            <span style="text-decoration: underline; font-size: 16px;">
+                                <b>Cachet et Signature</b>
+                            </span>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="product_sale_view_cost" model="ir.ui.view">
+        <field name="name">Marge des Produits Finaux</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Product" create="false">
+                <field name="name" string="Article"/>
+                <field name="bom_cost"/>
+                <field name="exploitation_cost"/>
+                <field name="standard_price"/>
+                <field name="list_price"/>
+                <field name="marge_brute"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_product_sale_view_cost" model="ir.actions.act_window">
+        <field name="name">Marge des Produits Finaux</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_id" ref="product_sale_view_cost"/>
+       <field name="domain">[('sale_ok', '=', True)]</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+
+</odoo>

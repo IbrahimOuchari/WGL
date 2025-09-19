@@ -1,0 +1,41 @@
+<odoo>
+    <!-- Vue arbre pour account.notification -->
+    <record id="account_notification_tree_view" model="ir.ui.view">
+        <field name="name">account.notification.tree</field>
+        <field name="model">account.notification</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="number"/>
+                <field name="num"/>
+                <field name="type1"/>
+                <field name="date"/>
+                <field name="amount"/>
+                <field name="paid"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue de recherche avec filtre par défaut : paid = False -->
+    <record id="account_notification_search_view" model="ir.ui.view">
+        <field name="name">account.notification.search</field>
+        <field name="model">account.notification</field>
+        <field name="arch" type="xml">
+            <search string="Recherche">
+                <!-- Filtre appliqué par défaut -->
+                <filter string="Non Payé" name="not_paid" domain="[('paid', '=', False)]" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Action fenêtre utilisant la vue arbre et la vue de recherche -->
+    <record id="action_account_notification" model="ir.actions.act_window">
+        <field name="name">Encaissement Prévisionnel</field>
+        <field name="res_model">account.notification</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="account_notification_tree_view"/>
+        <field name="search_view_id" ref="account_notification_search_view"/>
+        <!-- Contexte pour appliquer le filtre not_paid par défaut -->
+        <field name="context">{'search_default_not_paid': 1}</field>
+    </record>
+    <menuitem id="menu_analyse_account_notification" parent="account.menu_finance_reports" action="action_account_notification" sequence="20"/>
+</odoo>

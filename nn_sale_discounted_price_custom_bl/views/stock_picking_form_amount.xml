@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_picking_form_custom" model="ir.ui.view">
+        <field name="name">stock.picking.form.custom</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//field[@name='picking_type_id']" position="after">
+                <field name="sequence_code" invisible="1"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_report" type="object" string="Générer Bl Valorisé" class="btn-primary"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='quantity_done']" position="after">
+                <field name="pu_remise" attrs="{'column_invisible':[('parent.sequence_code','=','Retour')]}"/>
+             <field name="total" readonly="1" attrs="{'column_invisible': [('parent.sequence_code', '=', 'Retour')]}"/> <!-- Display the total field -->
+                <field name="price_subtotal" string="Sous-total" optional="1"
+                       readonly="1"/> <!-- Display the total field -->
+                <field name="price_tax" string="Prix tax" invisible="1" readonly="1"/> <!-- Display the total field -->
+
+                <field name="price_unit_move" optional="1"
+                       readonly="1"/> <!-- Display the total field -->
+
+            </xpath>
+
+
+            <xpath expr="//notebook" position="after">
+                <div class="oe_button_box" style="text-align: right;">
+                    <div>
+                        <label for="amount_untaxed" class="o_form_label" style="font-weight: bold; font-size: 1.5em;">
+                            Montant HT:
+                        </label>
+                        <field name="amount_untaxed" string="Montant HT" readonly="1"
+                               style="font-size: 1.2em; width: 150px;"/>
+                    </div>
+                    <div>
+                        <label for="amount_tax" class="o_form_label" style="font-weight: bold; font-size: 1.5em;">
+                            Taxes:
+                        </label>
+                        <field name="amount_tax" string="Taxes" readonly="1" style="font-size: 1.2em; width: 150px;"/>
+                    </div>
+
+                    <!-- Shortened thick separator line -->
+                    <hr style="border-top: 4px solid #000; width: 23%; margin: 10px 0; margin-left: auto;"/>
+
+                    <div>
+                        <strong style="font-weight: bold; font-size: 1.5em;">Total:</strong>
+                        <field name="amount_total" string="Total" readonly="1" style="font-size: 1.2em; width: 150px;"/>
+                    </div>
+                </div>
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+</odoo>

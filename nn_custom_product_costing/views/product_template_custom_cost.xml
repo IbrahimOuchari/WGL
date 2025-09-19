@@ -1,0 +1,41 @@
+<odoo>
+    <record id="product_template_custom_cost_inherited" model="ir.ui.view">
+        <field name="name">product.template.custom.cost.inherited</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Add a new page in the notebook for cost structure -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Structure et Coût">
+                    <!-- BOM Cost: Total cost of the selected BOM (is_calculated=True) -->
+                    <group>
+                        <field name="bom_cost"
+                               string="Coût de la nomenclature"
+                               help="Coût total de la nomenclature sélectionnée (is_calculated=True)." />
+                    </group>
+
+                    <!-- Exploitation Charge Percentage: Manually entered percentage -->
+                    <group>
+                        <field name="exploitation_charge_percent"
+                               string="% Charge d’exploitation"
+                               help="Pourcentage manuel de charge d’exploitation." />
+                    </group>
+
+                    <!-- Exploitation Cost: Computed on change of BOM cost or exploitation charge -->
+                    <group>
+                        <field name="exploitation_cost"
+                               string="Coût d’exploitation"
+                               help="Calculé comme : (Coût de la nomenclature * (100 + % Charge d’exploitation)) / 100." />
+                    </group>
+
+                    <!-- Total Cost: Computed as BOM Cost + Exploitation Cost -->
+                    <group>
+                        <field name="total_cost"
+                               string="Coût de revient total"
+                               help="Calculé comme : Coût de la nomenclature + Coût d’exploitation." />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_devis_tree_view" model="ir.ui.view">
+        <field name="name">sale.devis.tree</field>
+        <field name="model">sale.devis</field>
+        <field name="arch" type="xml">
+
+            <tree string="Devis">
+                <field name="name" string="Référence Devis"/>
+                <field name="partner_id"/>
+                <field name="date_devis"/>
+                <field name="validity_date"/>
+                <field name="user_id"/>
+                <field name="amount_total"/>
+                <field name="status_devis" widget="badge"
+                       decoration-muted="status_devis == '1'"
+                       decoration-success="status_devis == '2'"
+                       decoration-danger="status_devis == '3'"
+                       decoration-warning="status_devis == '4'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_devis_form_view" model="ir.ui.view">
+        <field name="name">sale.devis.form</field>
+        <field name="model">sale.devis</field>
+        <field name="arch" type="xml">
+            <form string="Devis">
+                <header>
+                    <field name="state" widget="statusbar" nolabel="1"/>
+
+                    <button name="action_cancel"
+                            string="Annuler Devis" class="btn-secondary" type="object"
+                            attrs="{'invisible': [('state', 'not in', [('devis'), ('confirme')])]}"/>
+                    <button name="create_order"
+                            string="Créer Commande de Vente" class="btn-primary" type="object"
+                            attrs="{'invisible': [('state', 'not in', [('devis')])]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group name="devis_header">
+                        <group name="partner" options="{'no_open':True,'no_create': True}">
+                            <field name="partner_id" options="{'no_open':True,'no_create': True}"/>
+                            <field name="tag_ids" widget="many2many_tags" string="Étiquettes"
+                                   options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            <field name="show_update_pricelist" invisible="1"/>
+                            <label for="pricelist_id" groups="product.group_product_pricelist"/>
+                            <div groups="product.group_product_pricelist" class="o_row">
+                                <field name="pricelist_id" options="{'no_open':True,'no_create': True}"/>
+                                <button name="update_prices" type="object"
+                                        string="Mettre à jour le prix"
+                                        class="btn-link mb-1 px-0" icon="fa-refresh"
+                                        confirm="This will update all unit prices based on the currently set pricelist."
+                                        attrs="{'invisible': ['|', ('show_update_pricelist', '=', False), ('state', 'in', ['sale', 'done','cancel'])]}"/>
+                            </div>
+
+                        </group>
+                        <group name="date">
+                            <field name="date_devis"/>
+                            <field name="validity_date"/>
+                            <field name="payment_term_id" options="{'no_open':True,'no_create': True}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="is_expired" invisible="1"/>
+                            <field name="status_devis" widget="badge"
+                                   decoration-muted="status_devis == '1'"
+                                   decoration-success="status_devis == '2'"
+                                   decoration-danger="status_devis == '3'"
+                                   decoration-warning="status_devis == '4'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes de Devis" name="devis_lines">
+                            <field
+                                    name="devis_line"
+                                    widget="section_and_note_one2many"
+                                    mode="tree,kanban"
+                                    attrs="{'readonly': [('state', 'in', 'cancel')]}">
+
+                                <tree string="Devis Ligne"
+                                      editable="bottom">
+                                    <control>
+                                        <create name="add_product_control" string="Ajouter un Article"/>
+                                        <create name="add_section_control" string="Ajouter une Section"
+                                                context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Ajouter une Note"
+                                                context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+
+                                    <field
+                                            name="product_id"
+                                            attrs="{'required': [('display_type', '=', False)]}"
+                                            options="{'no_open': True, 'no_create': True, 'no_create_edit':True}"
+                                            force_save="1"
+                                            context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity':qty,
+                                            'pricelist': parent.pricelist_id,
+                                            'uom':product_uom,
+                                            'company_id': parent.company_id,
+                                            'default_lst_price': price_unit,
+                                            'default_description_sale': name
+                                        }"
+                                            domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                            widget="product_configurator"/>
+                                    <field name="name"/>
+                                    <field name="qty"
+                                           context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity': qty,
+                                            'pricelist': parent.pricelist_id,
+                                            'uom': product_uom,
+                                            'company_id': parent.company_id}"/>
+                                    <field name="product_uom"/>
+                                    <field name="price_unit"/>
+                                    <field
+                                            name="tax_id"
+                                            widget="many2many_tags"
+                                            options="{'no_create': True}"
+                                            domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                                            context="{'active_test': True}"
+                                            optional="show"
+                                    />
+                                    <field name="discount" groups="product.group_discount_per_so_line"
+                                           optional="show" widget="product_discount"/>
+                                    <field name="pu_remise"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="price_tax" invisible="1"/>
+
+                                </tree>
+
+
+                            </field>
+                        </page>
+
+                        <page string="Article Optionnel" name="devis_lines_option">
+                            <field
+                                    name="devis_line_option"
+                                    widget="section_and_note_one2many"
+                                    mode="tree,kanban"
+                                    attrs="{'readonly': [('state', 'in', 'cancel')]}">
+
+                                <tree string="Devis Ligne Option"
+                                      editable="bottom">
+                                    <control>
+                                        <create name="add_product_control" string="Ajouter un Article"/>
+                                        <create name="add_section_control" string="Ajouter une Section"
+                                                context="{'default_display_type': 'line_section'}"/>
+                                        <create name="add_note_control" string="Ajouter une Note"
+                                                context="{'default_display_type': 'line_note'}"/>
+                                    </control>
+
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="display_type" invisible="1"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+
+                                    <field
+                                            name="product_id"
+                                            attrs="{'required': [('display_type', '=', False)]}"
+                                            options="{'no_open': True, 'no_create': True, 'no_create_edit':True}"
+                                            force_save="1"
+                                            context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity':qty,
+                                            'pricelist': parent.pricelist_id,
+                                            'uom':product_uom,
+                                            'company_id': parent.company_id,
+                                            'default_lst_price': price_unit,
+                                            'default_description_sale': name
+                                        }"
+                                            domain="[('sale_ok', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                                            widget="product_configurator"/>
+                                    <field name="name"/>
+                                    <field name="qty"
+                                           context="{
+                                            'partner_id': parent.partner_id,
+                                            'quantity': qty,
+                                            'pricelist': parent.pricelist_id,
+                                            'uom': product_uom,
+                                            'company_id': parent.company_id}"/>
+                                    <field name="product_uom"/>
+                                    <field name="price_unit"/>
+                                    <field
+                                            name="tax_id"
+                                            widget="many2many_tags"
+                                            options="{'no_create': True}"
+                                            domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                                            context="{'active_test': True}"
+                                            optional="show"
+                                    />
+                                    <field name="discount" groups="product.group_discount_per_so_line"
+                                           optional="show" widget="product_discount"/>
+                                    <field name="pu_remise"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                    <field name="price_tax" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Autres Informations" name="other_information">
+                            <group name="sales_person" string="Vente">
+                                <field name="user_id" widget="many2one_avatar_user"/>
+                                <field name="team_id" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"
+                                       options="{'no_create': True}" string="Equipe Commerciale"/>
+                                <field name="company_id" options="{'no_create': True}"
+                                       groups="base.group_multi_company"/>
+                            </group>
+                            <group name="sale_info" string="Facturation">
+                                <field name="fiscal_position_id" options="{'no_create': True}"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+
+                    <group name="note_group" col="6" class="mt-2 mt-md-0">
+                        <group colspan="4">
+                            <field name="note" nolabel="1" placeholder="Termes et Conditions du Devis"/>
+                        </group>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="devis_total">
+                            <field name="amount_untaxed" widget='monetary'
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="amount_by_group" widget="tax-group-custom-field" nolabel="1" colspan="2"/>
+                            <!--    <field name="amount_tax" widget='monetary'
+                                       options="{'currency_field': 'currency_id'}"/>
+                                       -->
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="amount_total"/>
+                            </div>
+                            <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                   widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <div class="oe_clear"/>
+                    </group>
+
+                </sheet>
+
+
+
+            </form>
+        </field>
+    </record>
+
+    <record id="devis_action" model="ir.actions.act_window">
+        <field name="name">Devis</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.devis</field>
+        <field name="view_mode">tree,form</field>
+        <!-- ,form,calendar,pivot,graph,activity -->
+        <field name="view_id" ref="sale_devis_tree_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau Devis !
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_sale_devis"
+              name="Devis"
+              action="devis_action"
+              parent="sale.sale_menu_root"
+              groups="sales_team.group_sale_salesman"
+              sequence="1"/>
+
+    <!-- Sequences for sale.devis -->
+    <record id="seq_sale_devis" model="ir.sequence">
+        <field name="name">Devis</field>
+        <field name="code">sale.devis</field>
+        <field name="prefix">Devis - %(y)s -</field>
+        <field name="padding">3</field>
+        <field name="company_id" eval="False"/>
+        <field name="use_date_range" eval="True"/>
+    </record>
+    <!--Filtre de recherch-->
+    <record id="sale_devis_filter_view" model="ir.ui.view">
+        <field name="name">sale.devis.filter</field>
+        <field name="model">sale.devis</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <search string="Recherche Devis">
+                <field name="partner_id" operator="child_of" string="Client"/>
+
+                <filter string="Mes Devis" domain="[('user_id', '=', uid)]" name="my_devis_filter"/>
+                <separator/>
+                <filter name="status_devis1" string="Devis" domain="[('status_devis', '=', '1')]"/>
+                <filter name="status_devis2" string="Devis Confirmé" domain="[('status_devis', '=', '2')]"/>
+                <filter name="status_devis3" string="Devis Expiré" domain="[('status_devis', '=', '3')]"/>
+                <filter name="status_devis4" string="Devis Annulé" domain="[('status_devis', '=', '4')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Commercial" name="salesperson" domain="[]" context="{'group_by': 'user_id'}"/>
+                    <filter name="Client" string="Client" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Date" name="order_month" domain="[]" context="{'group_by': 'date_devis'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <!-- search panel BC -->
+    <record id="devis_panneaux_recherche_search" model="ir.ui.view">
+        <field name="name">sale.devis.search (devis_panneaux_recherche)</field>
+        <field name="model">sale.devis</field>
+        <field name="inherit_id" ref="BMG_sale_starter.sale_devis_filter_view"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <searchpanel>
+                    <field name="status_devis" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+</odoo>

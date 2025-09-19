@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_mrp_production_form_inherit2" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_lots" type="object" string="Créer lot" class="oe_highlight"
+
+                />
+                <button name="print_etiquette" type="object" string="Print Étiquette" class="oe_highlight"
+
+                />
+
+
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <label for="quantity_per_batch" string="Quantité Colisgae"/>
+                <div class="o_row">
+                    <field name="quantity_per_batch"/>
+                </div>
+
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Gestion de étiquettes">
+                    <field name="is_readonly_lot" invisible="1"/> <!-- Keep this invisible in the UI -->
+
+                    <field name="label_management_ids" attrs="{'readonly': [('is_readonly_lot', '=', True)]}">
+                        <tree editable="bottom">
+                            <field name="name" string="ID-ETQ-EXP"/>
+                            <field name="quantity_per_batch"/>
+                            <field name="total_quantity_per_batch" invisible="1" string="total"/>
+                            <field name="cumule" string="Cumulé"/>
+                            <field name="date" string="Date"/>
+                            <field name="state" string="Status"/>
+                            <!--                            <button name="print_label" string="Imprimer" type="object" class="btn-primary"/>-->
+
+                        </tree>
+                    </field>
+
+                    <!-- Block button: visible when is_readonly_lot is False -->
+                    <button name="block_lot" string="Bloquer étiquette" type="object" class="oe_highlight"
+                            groups="nn_Z2S.lot_edit" attrs="{'invisible': [('is_readonly_lot', '!=', False)]}"/>
+
+                    <!-- Unblock button: visible when is_readonly_lot is True -->
+                    <button name="unblock_lot" string="Débloquer étiquette" type="object" class="oe_highlight"
+                            groups="nn_Z2S.lot_edit" attrs="{'invisible': [('is_readonly_lot', '!=', True)]}"/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

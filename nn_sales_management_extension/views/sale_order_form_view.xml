@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_order_form_inherit" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+        <!-- Choose a suitable location to add the fields -->
+        <xpath expr="//page[@name='other_information']//field[@name='invoice_status']" position="after">
+            <field name="forcee_facturation" groups="nn_sales_management_extension.forcee_facturation_livraison"/>
+            <field name="forcee_livraison" groups="nn_sales_management_extension.forcee_facturation_livraison" />
+        </xpath>
+ <xpath expr="//field[@name='order_line']//tree//field[@name='price_unit']" position="after">
+                <field name="margin_product" sum="Marge Totale" groups="nn_custom_product_costing.margin_product"/>
+
+            </xpath>
+
+    </field>
+</record>
+</odoo>

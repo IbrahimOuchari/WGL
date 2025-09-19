@@ -1,0 +1,54 @@
+<odoo>
+    <record model="ir.ui.view" id="view_sale_order_line_pivot">
+        <field name="name">sale.order.line.pivot</field>
+        <field name="model">sale.order.line</field>
+        <field name="type">pivot</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <pivot string="Lignes de Commandes" sample="1">
+                <field name="product_id" type="row"/>
+                <field name="product_uom_qty" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+            <tree string="Sale Order Lines" create="false">
+                <field name="order_id" string="Order Reference"/>
+                <field name="order_partner_id" string="Customer"/>
+                <field name="product_id" string="Product"/>
+                <field name="name" string="Description"/>
+                <field name="product_uom_qty" string="Qty"/>
+                <field name="price_unit" string="Unit Price"/>
+                <field name="qty_delivered" string="Delivered"/>
+                <field name="qty_invoiced" string="Invoiced"/>
+                <field name="price_subtotal" string="Subtotal"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_sale_order_line_tree" model="ir.ui.view">
+        <field name="name">sale.order.line</field>
+        <field name="model">sale.order.line</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Order Lines" create="false">
+                <field name="order_id" string="Order Reference"/>
+                <field name="order_partner_id" string="Client"/>
+                <field name="product_id" string="Article"/>
+                <field name="name" string="Description"/>
+                <field name="product_uom_qty" string="Quantité"/>
+                <field name="price_unit" string="P.U."/>
+                <field name="qty_delivered" string="Qté Livrée"/>
+                <field name="qty_invoiced" string="Qté Facturée"/>
+                <field name="price_subtotal" string="Montant H.T."/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_orders_lines" model="ir.actions.act_window">
+        <field name="name">Lignes de Commandes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_id" ref="view_sale_order_line_tree"/>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+
+</odoo>

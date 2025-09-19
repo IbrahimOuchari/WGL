@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_devis,access.sale.devis,model_sale_devis,sales_team.group_sale_salesman,1,1,1,1
+access_sale_devis_line,access.sale.devis.line,model_sale_devis_line,sales_team.group_sale_salesman,1,1,1,1
+access_sale_devis_line_option,access.sale.devis.line.option,model_sale_devis_line_option,sales_team.group_sale_salesman,1,1,1,1

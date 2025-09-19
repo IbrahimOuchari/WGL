@@ -1,0 +1,10 @@
+<odoo>
+    <report
+        id="action_report_product_template_xlsx"
+        string="Rapport Excel des Produits"
+        model="product.template"
+        report_type="xlsx"
+        file="nn_custom_product_costing.product_template_xlsx"
+        name="nn_custom_product_costing.product_template_xlsx"
+    />
+</odoo>

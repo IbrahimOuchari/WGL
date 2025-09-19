@@ -1,0 +1,67 @@
+<odoo>
+    <!-- Vue arbre pour Trésorerie Mensuelle -->
+    <record id="view_tresorerie_mensuelle_tree" model="ir.ui.view">
+        <field name="name">tresorerie.mensuelle.tree</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree string="Trésorerie Mensuelle" create="false" edit="false" decoration-danger="amount_residual &gt; 0">
+                <field name="name" string="Numéro de Facture"/>
+                <field name="partner_id" string="Client"/>
+                <field name="amount_untaxed" string="Montant HT" sum="Total HT"/>
+                <field name="amount_total" string="Montant TTC" sum="Total TTC"/>
+                <field name="amount_paid" string="Montant Payé" sum="Total Payé"/>
+                <field name="amount_residual" string="Montant Dû" sum="Total Dû"/>
+                <field name="payment_en_instance" string="Paiements Échelonnés" sum="Total Paiements Échelonnés"/>
+                <field name="credit" string="Crédit" sum="Total Crédit"/>
+                <!-- Include state field but hide it -->
+                <field name="state" invisible="1"/>
+            </tree>
+        </field>
+    </record>    <record id="tree_test" model="ir.ui.view">
+        <field name="name">account.move.payemnt_en_instance</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"  />
+        <field name="arch" type="xml">
+<xpath expr="//page[2]" position="inside">
+              <field  name="payment_en_instance" string="Payment en instance" invisible="1"/>
+
+          </xpath>
+        </field>
+    </record>
+
+    <!-- Vue de recherche pour Trésorerie Mensuelle -->
+    <record id="view_tresorerie_mensuelle_search" model="ir.ui.view">
+        <field name="name">tresorerie.mensuelle.search</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Trésorerie">
+                <field name="name" string="Numéro de Facture"/>
+                <field name="partner_id" string="Client"/>
+                <filter string="Factures avec Solde" name="with_due" domain="[('amount_residual', '>', 0)]"/>
+                <filter string="Factures avec Échéancier" name="with_scheduled" domain="[('payment_en_instance', '>', 0)]"/>
+                <group expand="0" string="Regrouper Par">
+                    <filter string="Client" name="partner" context="{'group_by':'partner_id'}"/>
+                    <filter string="Mois" name="month" context="{'group_by':'invoice_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour Trésorerie Mensuelle -->
+    <record id="action_tresorerie_mensuelle" model="ir.actions.act_window">
+        <field name="name">Trésorerie Mensuelle</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_tresorerie_mensuelle_tree"/>
+        <field name="search_view_id" ref="view_tresorerie_mensuelle_search"/>
+        <field name="domain">[('move_type', 'in', ['out_invoice', 'out_refund']), ('state', 'not in', ['draft', 'cancel'])]</field>
+        <field name="context">{'search_default_month': 1}</field>
+    </record>
+
+    <!-- Menu item pour Trésorerie Mensuelle -->
+    <menuitem id="menu_tresorerie_mensuelle"
+              name="Trésorerie Mensuelle"
+              parent="sale.menu_sale_report"
+              action="action_tresorerie_mensuelle"
+              sequence="20" />
+</odoo>

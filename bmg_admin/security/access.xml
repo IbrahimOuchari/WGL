@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="group_account_user_only_doc" model="res.groups">
+        <field name="name">Afficher les documents user seulement</field>
+        <field name="category_id" ref="base.module_category_accounting_accounting"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="invoice_personal_rule" model="ir.rule">
+        <field name="name">Personal Invoice</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="domain_force">['|',('invoice_user_id','=',user.id),('invoice_user_id','=',False)]</field>
+        <field name="groups" eval="[(4, ref('bmg_admin.group_account_user_only_doc'))]"/>
+    </record>
+
+</odoo>

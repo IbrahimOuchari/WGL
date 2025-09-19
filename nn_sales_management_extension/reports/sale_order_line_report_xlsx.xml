@@ -1,0 +1,10 @@
+<odoo>
+    <report
+        id="action_report_sale_order_line_xlsx"
+        string="Rapport Excel"
+        model="sale.order.line"
+        report_type="xlsx"
+        file="nn_sales_management_extension.sale_order_line_xlsx"
+        name="nn_sales_management_extension.sale_order_line_xlsx"
+    />
+</odoo>

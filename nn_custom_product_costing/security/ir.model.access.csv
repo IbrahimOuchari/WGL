@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_product,access_product_product,model_product_product,,1,1,1,1
+access_product_template,access_product_template,model_product_template,,1,1,1,1
+access_mrp_bom,access_mrp_bom,model_mrp_bom,,1,1,1,1
+access_mrp_bom_line,access_mrp_bom_line,model_mrp_bom_line,,1,1,1,1
+access_sale_devis,access_sale_devis,model_sale_devis,,1,1,1,1
+access_sale_devis_line,access_sale_devis_line,model_sale_devis_line,,1,1,1,1
+access_label_management,access_label_management,model_label_management,,1,1,1,1
+
+
+

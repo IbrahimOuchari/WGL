@@ -1,0 +1,18 @@
+<odoo>
+    <!-- Add Chatter to Stock Picking Type -->
+    <record id="view_type_form_inherit_chatter" model="ir.ui.view">
+        <field name="name">stock.picking.type.form.inherit.chatter</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <!-- Add the Chatter to the form view of Stock Picking Type -->
+            <xpath expr="//form/sheet" position="inside">
+ <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+</xpath>
+        </field>
+    </record>
+</odoo>

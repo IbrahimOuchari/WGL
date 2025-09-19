@@ -1,0 +1,32 @@
+<odoo>
+
+  <record id="view_sale_order_line_tree_custom" model="ir.ui.view">
+        <field name="name">sale.order.line.tree.custom</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="BMG_sale_starter.view_sale_order_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_id']" position="before">
+                <field name="date_order"/>
+            </xpath>
+                   <xpath expr="//field[@name='order_id']" position="replace">
+                <field name="order_id" widget="many2one"/>
+          </xpath>
+                               <xpath expr="//field[@name='product_id']" position="replace">
+                <field name="product_id" widget="many2one"/>
+          </xpath>
+
+
+            <xpath expr="//field[@name='qty_delivered']" position="before">
+
+                <field name="margin_product" groups="nn_custom_product_costing.margin_product"/>
+                <field name="decoration_danger" invisible="1"/>
+
+            </xpath>
+
+
+            <xpath expr="//tree" position="attributes">
+    <attribute name="decoration-danger">decoration_danger == True</attribute>
+</xpath>
+        </field>
+    </record>
+</odoo>

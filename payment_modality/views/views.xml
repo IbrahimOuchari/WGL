@@ -1,0 +1,102 @@
+<odoo>
+  <data>
+        <!--tree view of type de paiment-->
+        <record id="type_payment_tree_view" model="ir.ui.view">
+            <field name="name">type.payment.tree</field>
+            <field name="model">payment.modality</field>
+            <field name="arch" type="xml">
+                <tree string="Modalité de paiment">
+                    <field name="partner_id"/>
+                    <field name="type_modalite"/>
+                    <field name="state1"/>
+                    <field name="payment_state" widget="badge" decoration-danger="payment_state == 'not_paid'" decoration-warning="payment_state == 'partial'" decoration-success="payment_state =='paid'" />
+
+                </tree>
+            </field>
+        </record>
+
+<!--      <record id="payment_view_forms_1" model="ir.ui.view">-->
+<!--          <field name="name">payment.form</field>-->
+<!--          <field name="model">account.payment</field>-->
+<!--          <field name="inherit_id" ref="account.view_account_payment_form"/>-->
+<!--          <field name="arch" type="xml">-->
+<!--              <xpath expr="//field[@name='move_id']" position="after">-->
+<!--                    <field name="type_pay"/>-->
+<!--                    <field name="mode_pay"/>-->
+<!--                    <field name="type_modalite" attrs="{'invisible':[('mode_pay','!=','b')]}"/>-->
+<!--                    <field name="num_cheque" attrs=" {'invisible': [('type_pay','!=','b')]} "/>-->
+<!--                    <field name="num_bank" attrs=" {'invisible': [('type_pay','!=','b')]} "/>-->
+<!--                    <field name="date_emission"/>-->
+<!--            </xpath>-->
+
+<!--          </field>-->
+<!--      </record>-->
+        <!--form view of type de paiment-->
+
+        <record model="ir.ui.view" id="type_payment_form_view">
+            <field name="name">type.payment.form</field>
+            <field name="model">payment.modality</field>
+            <field name="arch" type="xml">
+                <form string="Modalité de paiment">
+                    <sheet>
+                        <group>
+                    <field name="partner_id"/>
+                            <field name="type_modalite"/>
+                            <field name="lst_price1"/>
+                            <field name="lst_price" readonly="True" widget="monetary" />
+
+                            <field name="payment_state" invisible="1"/>
+                        </group>
+                        <widget name="web_ribbon" title="Paid"
+                                attrs="{'invisible':[('payment_state', '!=', 'paid')]}"/>
+                        <widget name="web_ribbon" title="Partial"
+                                attrs="{'invisible':[('payment_state', '!=', 'partial')]}"/>
+                        <widget name="web_ribbon" title="Not Paid" bg_color="bg-danger"
+                                attrs="{'invisible':[('payment_state', '!=', 'not_paid')]}"/>
+
+                        <notebook>
+                            <page string="Liste des Cheque">
+                                <field name="payment_lines">
+                                        <tree editable="bottom">
+                                            <field name="num_cheque"/>
+                                            <field name="montant"/>
+                                            <field name="date_che"/>
+                                            <field name="State" />
+                                        </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+       <record id="payment_view_forms" model="ir.ui.view">
+          <field name="name">payment_form</field>
+          <field name="model">account.payment</field>
+          <field name="inherit_id" ref="account.view_account_payment_form"/>
+          <field name="arch" type="xml">
+              <xpath expr="//field[@name='partner_bank_id']" position="after">
+                    <field name="type_pay"/>
+                    <field name="mode_pay"/>
+                    <field name="nbr_month" attrs="{'invisible':[('mode_pay','!=','b')]}"/>
+                    <field name="num_cheque" attrs=" {'invisible': [('type_pay','!=','b')]} "/>
+                    <field name="num_bank" attrs=" {'invisible': [('type_pay','!=','b')]} "/>
+                    <field name="date_emission"/>
+            </xpath>
+
+          </field>
+      </record>
+
+            <record id="action_payment" model="ir.actions.act_window">
+            <field name="name">Suivi de Paiements</field>
+            <field name="res_model">payment.modality</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+            <menuitem id="type_payment_id"
+                  name="Suivi de Paiements"
+                  parent="account.menu_finance_receivables"
+                  action="action_payment"
+                  sequence="10"/>
+  </data>
+</odoo>

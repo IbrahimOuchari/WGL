@@ -1,0 +1,17 @@
+<odoo>
+    <record id="product_product_custom_cost_inherited" model="ir.ui.view">
+        <field name="name">product.product.custom_cost_inherited</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <field name="bom_cost" force_save="1"/>
+                <field name="bom_cost_set" invisible="1"/>
+                <field name="exploitation_charge_percent"/>
+                <field name="exploitation_cost"/>
+                <field name="total_cost"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

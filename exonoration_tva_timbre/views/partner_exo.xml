@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+	<record id="partner_perso" model="ir.ui.view">
+		<field name="name">partner.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="arch" type="xml" >
+			<notebook position="before">
+				<!-- <span>exonération</span> -->
+  		<separator string="Exonoration"/>
+				<group>
+					<group>
+						<field name="exo_tva" />
+						<field name="date_limite_tva" attrs="{'invisible':[('exo_tva','!=',True)]}" />
+				    </group>
+					<group>
+						<field name="exo_timbre" />
+					 	<field name="date_limite_timbre"  attrs="{'invisible':[('exo_timbre','!=',True)]}"/>
+					</group>
+					<!-- <field name="num_attest"  />
+					<field name="vts"  /> -->
+
+				</group>
+			</notebook>
+		</field>
+	</record>
+
+</odoo>
