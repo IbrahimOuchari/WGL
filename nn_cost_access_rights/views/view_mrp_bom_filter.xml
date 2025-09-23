@@ -13,22 +13,12 @@
                 <filter name="filter_total_cost_gt_0" string="Coût Total > 0" domain="[('total_cost','>',0)]"/>
                 <filter name="filter_total_cost_lte_0" string="Coût Total &lt;= 0" domain="[('total_cost','&lt;=',0)]"/>
 
-                <separator/>
 
-                <!-- Cost Product -->
-                <filter name="filter_cost_product_gt_0" string="Coût Produit > 0" domain="[('cost_product','>',0)]"/>
                 <filter name="filter_cost_product_lte_0" string="Coût Produit &lt;= 0" domain="[('cost_product','&lt;=',0)]"/>
 
-                <separator/>
-
-                <!-- Unit Price -->
-                <filter name="filter_price_unit_gt_0" string="Prix Unitaire > 0" domain="[('price_unit','>',0)]"/>
                 <filter name="filter_price_unit_lte_0" string="Prix Unitaire &lt;= 0" domain="[('price_unit','&lt;=',0)]"/>
 
-                <separator/>
 
-                <!-- Gross Margin -->
-                <filter name="filter_marge_product_gt_0" string="Marge > 0" domain="[('marge_product','>',0)]"/>
                 <filter name="filter_marge_product_lte_0" string="Marge &lt;= 0" domain="[('marge_product','&lt;=',0)]"/>
             </xpath>
 

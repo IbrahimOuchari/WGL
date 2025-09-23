@@ -10,31 +10,17 @@
                 <separator/>
 
                 <!-- BoM Cost -->
-                <filter name="filter_bom_cost_gt_0" string="Coût de la nomenclature > 0" domain="[('bom_cost','>',0)]"/>
                 <filter name="filter_bom_cost_lte_0" string="Coût de la nomenclature &lt;= 0" domain="[('bom_cost','&lt;=',0)]"/>
 
-                <separator/>
-
-                <!-- Exploitation Cost -->
-                <filter name="filter_exploitation_cost_gt_0" string="Coût d'exploitation > 0" domain="[('exploitation_cost','>',0)]"/>
                 <filter name="filter_exploitation_cost_lte_0" string="Coût d'exploitation &lt;= 0" domain="[('exploitation_cost','&lt;=',0)]"/>
 
-                <separator/>
 
-                <!-- Standard Price -->
-                <filter name="filter_standard_price_gt_0" string="Coût > 0" domain="[('standard_price','>',0)]"/>
                 <filter name="filter_standard_price_lte_0" string="Coût &lt;= 0" domain="[('standard_price','&lt;=',0)]"/>
 
-                <separator/>
 
-                <!-- List Price -->
-                <filter name="filter_list_price_gt_0" string="Prix de vente > 0" domain="[('list_price','>',0)]"/>
                 <filter name="filter_list_price_lte_0" string="Prix de vente &lt;= 0" domain="[('list_price','&lt;=',0)]"/>
 
-                <separator/>
 
-                <!-- Gross Margin -->
-                <filter name="filter_marge_brute_gt_0" string="Marge Brute > 0" domain="[('marge_brute','>',0)]"/>
                 <filter name="filter_marge_brute_lte_0" string="Marge Brute &lt;= 0" domain="[('marge_brute','&lt;=',0)]"/>
             </xpath>
 
