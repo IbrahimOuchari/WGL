@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="custom_mrp_bom_line_cost_search_view2" model="ir.ui.view">
+        <field name="name">custom.mrp.bom.line.cost.search.extended</field>
+        <field name="model">mrp.bom.line</field>
+        <field name="inherit_id" ref="nn_reporting.mrp_bom_line_cost_search"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//search" position="inside">
+                <separator/>
+
+                <!-- Standard Price Related Product -->
+                <filter name="filter_standard_price_product_gt_0"
+                        string="Coût produit > 0"
+                        domain="[('standard_price_related_product','>',0)]"/>
+                <filter name="filter_standard_price_product_lte_0"
+                        string="Coût produit &lt;= 0"
+                        domain="[('standard_price_related_product','&lt;=',0)]"/>
+
+                <separator/>
+
+                <!-- Standard Price Related Template -->
+                <filter name="filter_standard_price_template_gt_0"
+                        string="Coût template > 0"
+                        domain="[('standard_price_related_template','>',0)]"/>
+                <filter name="filter_standard_price_template_lte_0"
+                        string="Coût template &lt;= 0"
+                        domain="[('standard_price_related_template','&lt;=',0)]"/>
+
+                <separator/>
+
+                <!-- Standard Price Calculated -->
+                <filter name="filter_standard_price_calculated_gt_0"
+                        string="Coût calculé > 0"
+                        domain="[('standard_price_calculated','>',0)]"/>
+                <filter name="filter_standard_price_calculated_lte_0"
+                        string="Coût calculé &lt;= 0"
+                        domain="[('standard_price_calculated','&lt;=',0)]"/>
+
+                <separator/>
+
+                <!-- Cost Product Boolean -->
+                <filter name="filter_cost_product_true"
+                        string="Coût produit nul"
+                        domain="[('cost_product','=',True)]"/>
+                <filter name="filter_cost_product_false"
+                        string="Coût produit non nul"
+                        domain="[('cost_product','=',False)]"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

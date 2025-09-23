@@ -7,7 +7,7 @@ class ProductTemplate(models.Model):
         string="Coût de la nomenclature",
         compute="compute_bom_cost",
         readonly=False,
-        help="Coût total de la nomenclature sélectionnée."
+        help="Coût total de la nomenclature sélectionnée.",store=True,
     )
     exploitation_charge_percent = fields.Float(
         string="% Charge d’exploitation",
@@ -26,7 +26,7 @@ class ProductTemplate(models.Model):
         help="Calculé comme: Bom Cost + Coût d’exploitation."
     )
 
-    @api.depends('bom_ids.total_cost', 'bom_ids','bom_ids.is_calculated','bom_cost')
+    @api.depends('bom_ids.total_cost','bom_count', 'bom_ids','bom_ids.is_calculated','bom_cost')
     def compute_bom_cost(self):
         for product in self:
             # Filter to only calculated BOMs (regardless of cost)

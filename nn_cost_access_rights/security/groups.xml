@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <record id="group_costs" model="res.groups">-->
+<!--        <field name="name">Gestion des Coûts des Produits</field>-->
+<!--    </record>-->
+
+       <record id="group_admin_costs" model="res.groups">
+        <field name="name">Gestion des Coûts des Produits</field>
+    </record>
+</odoo>

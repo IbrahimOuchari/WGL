@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <!-- Add a new page in the notebook for cost structure -->
             <xpath expr="//notebook" position="inside">
-                <page string="Structure et Coût">
+                <page string="Structure et Coût" name="structure_and_cost" >
                     <!-- BOM Cost: Total cost of the selected BOM (is_calculated=True) -->
                     <group>
                         <field name="bom_cost"

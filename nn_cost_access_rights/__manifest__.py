@@ -11,9 +11,17 @@
     'website': 'https://www.votresite.com',
     'category': 'Accounting',
     'license': 'LGPL-3',
-    'depends': ['base','account', 'purchase', 'product', 'purchase_last_price_info', 'nn_custom_product_costing'],
+    'depends': ['base','account', 'purchase', 'product',
+                'purchase_last_price_info', 'nn_custom_product_costing',
+                'nn_cost_structure','nn_custom_product_costing','nn_reporting'],
+
+
+
     'data': [
-        'security/ir.model.access.csv',
+        'security/groups.xml',
+        'views/mrp_product_template_search_view.xml',
+        'views/view_mrp_bom_filter.xml',
+        'views/view_mrp_bom_line_filter.xml',
         'views/product_template_views.xml',
     ],
 

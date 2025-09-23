@@ -29,7 +29,7 @@
             </xpath>
             <xpath expr="//field[@name='devis_line']/tree/field[@name='price_unit']"
                    position="after">
-                <field name="margin_product" sum="Marge Totale" groups="nn_custom_product_costing.margin_product"/>
+                <field name="margin_product" sum="Marge Totale"/>
             </xpath>
 
         </field>
