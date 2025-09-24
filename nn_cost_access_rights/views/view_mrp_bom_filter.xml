@@ -10,7 +10,6 @@
                 <separator/>
 
                 <!-- Total Cost -->
-                <filter name="filter_total_cost_gt_0" string="Coût Total > 0" domain="[('total_cost','>',0)]"/>
                 <filter name="filter_total_cost_lte_0" string="Coût Total &lt;= 0" domain="[('total_cost','&lt;=',0)]"/>
 
 

@@ -53,6 +53,9 @@ class ProductTemplate(models.Model):
         for product in self:
 
             if product.sale_ok and not product.purchase_ok:
+                product.compute_bom_cost()
+                product.compute_exploitation_cost()
+                product.compute_total_cost()
                 product.standard_price = product.total_cost
             elif product.purchase_ok:
                 # Filter only confirmed purchase order lines

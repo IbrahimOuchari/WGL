@@ -15,13 +15,13 @@ class ProductTemplate(models.Model):
     )
     exploitation_cost = fields.Float(
         string="Coût d’exploitation",
-        compute="_compute_exploitation_cost",
+        compute="compute_exploitation_cost",
         readonly=False,
         help="Calculé comme: (Bom Cost * (100 + % Charge d’exploitation)) / 100."
     )
     total_cost = fields.Float(
         string="Coût de revient total",
-        compute="_compute_total_cost",
+        compute="compute_total_cost",
         readonly=False,
         help="Calculé comme: Bom Cost + Coût d’exploitation."
     )
@@ -59,13 +59,13 @@ class ProductTemplate(models.Model):
             product.bom_cost = valid_bom.total_cost if valid_bom else 0.0
 
     @api.depends('bom_cost', 'exploitation_charge_percent')
-    def _compute_exploitation_cost(self):
+    def compute_exploitation_cost(self):
         """Compute the exploitation cost based on BOM cost and exploitation charge percentage."""
         for product in self:
             product.exploitation_cost = (product.bom_cost * product.exploitation_charge_percent) / 100
 
     @api.depends('bom_cost', 'exploitation_cost')
-    def _compute_total_cost(self):
+    def compute_total_cost(self):
         """Compute the total cost as BOM cost + exploitation cost."""
         for product in self:
             product.total_cost = product.bom_cost + product.exploitation_cost
