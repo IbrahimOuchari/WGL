@@ -40,6 +40,8 @@ class ProductTemplate(models.Model):
 
             # Set the cost
             product.bom_cost = valid_bom.total_cost if valid_bom else 0
+            product.compute_exploitation_cost()
+            product.compute_total_cost()
 
 
 
@@ -58,13 +60,13 @@ class ProductTemplate(models.Model):
             # Set the cost
             product.bom_cost = valid_bom.total_cost if valid_bom else 0.0
 
-    @api.depends('bom_cost', 'exploitation_charge_percent')
+    @api.onchange('bom_cost', 'exploitation_charge_percent')
     def compute_exploitation_cost(self):
         """Compute the exploitation cost based on BOM cost and exploitation charge percentage."""
         for product in self:
             product.exploitation_cost = (product.bom_cost * product.exploitation_charge_percent) / 100
 
-    @api.depends('bom_cost', 'exploitation_cost')
+    @api.onchange('bom_cost', 'exploitation_cost',)
     def compute_total_cost(self):
         """Compute the total cost as BOM cost + exploitation cost."""
         for product in self:

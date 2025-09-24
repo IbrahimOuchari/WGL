@@ -33,6 +33,7 @@ class ProductTemplate(models.Model):
         # inverse='_set_standard_price',
         # search='_search_standard_price',
         digits='Product Price',
+        readonly=True,
         groups="nn_reporting.group_manager_report_id",
         help="Cost based on the last purchase order line for this product, "
              "or manually set if needed.", store=True
