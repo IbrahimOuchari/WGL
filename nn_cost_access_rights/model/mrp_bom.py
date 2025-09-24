@@ -27,6 +27,7 @@ class MrpBomLineCustomFields(models.Model):
         related="product_id.standard_price",
         readonly=True,
         store=True,
+        digits='Product Price',
 
         help="Prix standard du composant, lié au champ standard_price dans le produit."
     )
@@ -34,17 +35,20 @@ class MrpBomLineCustomFields(models.Model):
         string="Coût",
         related="product_tmpl_id.standard_price",
         readonly=True,
-        store=True,
+        store=True, digits='Product Price',
+
         help="Prix standard du composant, lié au champ standard_price dans le produit."
     )
     standard_price_calculated = fields.Float(
         string="Coût Calculé",
         compute="_compute_standard_price_calculated",
-        digits=(16, 3),
-        store=True,
+        store=True, digits='Product Price',
+
         help="Coût calculé en multipliant le prix standard par la quantité du produit."
     )
     cost_product = fields.Boolean(
         string="Coût produit nul",
-        compute="price_cost",store=True,
+        compute="price_cost", store=True,
+        digits='Product Price',
+
     )

@@ -62,20 +62,20 @@ class MrpBomLineCustomFields(models.Model):
     standard_price_related_product = fields.Float(
         string="Coût",
         related="product_id.standard_price",
-        readonly=True,
+        readonly=True,store=True,
         help="Prix standard du composant, lié au champ standard_price dans le produit."
     )
     standard_price_related_template = fields.Float(
         string="Coût",
         related="product_tmpl_id.standard_price",
-        readonly=True,
+        readonly=True,store=True,
         help="Prix standard du composant, lié au champ standard_price dans le produit."
     )
     standard_price_calculated = fields.Float(
         string="Coût Calculé",
         compute="_compute_standard_price_calculated",
         digits= (16,3),
-        help="Coût calculé en multipliant le prix standard par la quantité du produit."
+        help="Coût calculé en multipliant le prix standard par la quantité du produit.",store=True
     )
 
     @api.depends('standard_price_related_template', 'standard_price_related_product', 'product_qty')
@@ -85,6 +85,8 @@ class MrpBomLineCustomFields(models.Model):
                 line.standard_price_calculated = line.standard_price_related_product * line.product_qty
             else:
                 line.standard_price_calculated = line.standard_price_related_template * line.product_qty
+
+
 
     def calculate_standard_price_calculated(self):
         """Compute the calculated cost as standard price multiplied by product quantity."""
