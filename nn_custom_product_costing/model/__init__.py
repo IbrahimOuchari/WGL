@@ -5,4 +5,4 @@ from . import sale_order_line_margin_product
 from . import mrp_production_create_lot
 from . import label_management
 from . import mrp_production_print_label
-
+from . import sale_order
