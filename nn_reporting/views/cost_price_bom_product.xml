@@ -5,7 +5,7 @@
         <field name="model">mrp.bom</field>
         <field name="arch" type="xml">
              <tree string="bom cost">
-                <field name="product_tmpl_id" string="Article"/>
+                <field name="product_tmpl_id" string="Article" widget="many2one"/>
                 <field name="total_cost" string="Coût Nomenclature"/>
                 <field name="cost_product" string="Coût de Revient Article"/>
                 <field name="price_unit" string="Prix de Vente"/>
