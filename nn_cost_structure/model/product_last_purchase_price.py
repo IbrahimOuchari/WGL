@@ -14,12 +14,11 @@ class ProductTemplate(models.Model):
         # search='_search_standard_price',
         digits='Product Price',
         help="Cost based on the last purchase order line for this product, "
-             "or manually set if needed.", store =True
+             "or manually set if needed.", store=True
     )
     new_purchase_order = fields.Integer("New Purchase Order", compute='compute_purchase_order', default=0, store=True)
 
-
-    @api.depends('last_purchase_line_id', 'last_purchase_line_ids', 'seller_ids', 'sale_ok','purchase_ok')
+    @api.depends('last_purchase_line_id', 'last_purchase_line_ids', 'seller_ids', 'sale_ok', 'purchase_ok')
     def compute_purchase_order(self):
         """Increment counter if new PO line is added"""
         for rec in self:
@@ -35,7 +34,7 @@ class ProductTemplate(models.Model):
             # detect if count increased compared to stored value
             if count > rec.new_purchase_order:
                 rec.new_purchase_order = count
-                if rec.standard_price == 0 and rec.new_purchase_order>0:
+                if rec.standard_price == 0 and rec.new_purchase_order > 0:
                     rec.compute_standard_price_update()
             else:
                 # keep current value if no new line added
@@ -43,10 +42,11 @@ class ProductTemplate(models.Model):
 
     @api.depends(
         'product_variant_ids',
-        'last_purchase_line_ids',
+        'last_purchase_line_ids', 'last_purchase_line_ids.price_unit',
         'last_purchase_line_id',
+        'last_purchase_line_id.price_unit',
         'last_purchase_price',
-        'new_purchase_order','bom_count','total_cost','sale_ok','purchase_ok'
+        'new_purchase_order', 'bom_count', 'total_cost', 'sale_ok', 'purchase_ok'
     )
     def compute_standard_price_update(self):
         """Compute standard_price from the latest confirmed purchase order line (state='purchase')"""
@@ -119,7 +119,6 @@ class ProductTemplate(models.Model):
                 return False
         return True
 
-
     def check_standard_price(self):
         """
         Check if the current product's standard_price matches
@@ -153,7 +152,6 @@ class ProductTemplate(models.Model):
 
         return True
 
-
     @api.model
     def get_products_with_mismatched_standard_price(self):
         """Return products whose standard_price does not match the latest purchase order line"""
@@ -170,6 +168,7 @@ class ProductTemplate(models.Model):
 
         _logger.info("Products with mismatched standard_price: %s", [p.name for p in result])
         return result
+
 
 class ProductProduct(models.Model):
     _inherit = 'product.product'
