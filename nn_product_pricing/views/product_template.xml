@@ -11,15 +11,16 @@
                     <!-- Discount Rate field with inline label -->
                     <div>
                         <label for="discount_rate"/>
-
                         <field name="discount_rate" class="oe_inline"/>
+
+
                     </div>
 
                     <!-- Price After Discount field with inline label -->
                     <div>
                         <label for="pu_after_discount"/>
-
                         <field name="pu_after_discount" class="oe_inline"/>
+
                     </div>
 
                 </div>
