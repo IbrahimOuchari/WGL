@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <record id="product_template_group_product_pricing" model="ir.ui.view">
         <field name="name">pt.product.pricing</field>
@@ -6,32 +5,24 @@
         <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='pricing']" position="after">
+                <label name="discount_rate" for="discount_rate"/>
+
                 <div name="product_pricing" attrs="{'invisible':[('sale_ok','=',False)]}">
 
-                    <!-- Discount Rate field with inline label -->
-                    <div>
-                        <label for="discount_rate"/>
-                        <field name="discount_rate" class="oe_inline"/>
+                    <!-- Put both fields inline with spacing -->
+                    <field name="discount_rate" class="oe_inline"/>
 
 
-                    </div>
+                </div>
+                <label name="pu_after_discount" for="pu_after_discount"/>
+                <div name="product_pricing" attrs="{'invisible':[('sale_ok','=',False)]}">
 
-                    <!-- Price After Discount field with inline label -->
-                    <div>
-                        <label for="pu_after_discount"/>
-                        <field name="pu_after_discount" class="oe_inline"/>
+                    <!-- Put both fields inline with spacing -->
 
-                    </div>
+                    <field name="pu_after_discount" class="oe_inline"/>
 
                 </div>
             </xpath>
-
-
         </field>
-
     </record>
-
-
 </odoo>
-
-
