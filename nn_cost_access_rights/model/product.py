@@ -43,7 +43,6 @@ class ProductTemplate(models.Model):
         'Sales Price', default=1.0,
         digits='Product Price',
 
-        groups="nn_reporting.group_manager_report_id",
         help="Price at which the product is sold to customers.", store=True)
 
     marge_brute = fields.Float(
