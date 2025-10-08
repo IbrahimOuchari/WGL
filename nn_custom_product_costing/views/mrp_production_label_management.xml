@@ -15,7 +15,7 @@
 
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <label for="quantity_per_batch" string="Quantité Colisgae"/>
+                <label for="quantity_per_batch" string="Quantité Colisage"/>
                 <div class="o_row">
                     <field name="quantity_per_batch"/>
                 </div>

@@ -76,16 +76,37 @@ class LabelManagement(models.Model):
 
     @api.depends('quantity_per_batch', 'manufacturing_order_id')
     def _compute_cumule(self):
+        """
+        Compute the cumulative quantity (`cumule`) for each record in relation
+        to its manufacturing order. Handles both saved and new (unsaved) records.
+        """
         for record in self:
-            if record.manufacturing_order_id:
-                total_cumule = 0.0
-                related_records = self.search([
-                    ('manufacturing_order_id', '=', record.manufacturing_order_id.id),
-                    ('active', '=', True)  # Check only active lots
-                ])
-                for rel_record in related_records:
-                    total_cumule += rel_record.quantity_per_batch
-                    rel_record.cumule = total_cumule  # Update cumule for each related record
+            if not record.manufacturing_order_id:
+                record.cumule = 0.0
+                continue
+
+            # Get all related records of the same manufacturing order, ordered by ID
+            related_records = self.search([
+                ('manufacturing_order_id', '=', record.manufacturing_order_id.id),
+                ('active', '=', True)
+            ], order='id asc')
+
+            total_cumule = 0.0
+            found = False
+
+            # Sum quantities until we reach the current record
+            for rel_record in related_records:
+                total_cumule += rel_record.quantity_per_batch
+
+                # Handle new records with _origin
+                if rel_record.id == record.id or rel_record._origin == record._origin:
+                    record.cumule = total_cumule
+                    found = True
+                    break
+
+            # If the record was not found in the search (new record not yet in DB)
+            if not found:
+                record.cumule = record.quantity_per_batch
 
     @api.model
     def action_create_lots(self, manufacturing_order, qty_producing):
