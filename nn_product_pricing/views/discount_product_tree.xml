@@ -1,0 +1,19 @@
+<odoo>
+
+
+    <record id="stock_tree_product_template" model="ir.ui.view">
+        <field name="name">product.template.new.fields</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="nn_reporting.product_sale_view_cost"/>
+        <field name="arch" type="xml">
+            <xpath expr="/tree/field[@name='list_price']" position="after">
+                <field name="discount_rate"/>
+                <field name="pu_after_discount"/>
+
+
+            </xpath>
+
+        </field>
+
+    </record>
+</odoo>

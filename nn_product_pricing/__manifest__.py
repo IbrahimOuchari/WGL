@@ -13,9 +13,10 @@
     "category": "Sales",
     "author": "Your Name",
     "website": "http://yourcompany.com",
-    "depends": ["product", "sale", "nn_reporting", "nn_sales_management_extension", "nn_cost_access_rights"],
+    "depends": ["product", "sale", "nn_reporting", "nn_sales_management_extension", "nn_cost_access_rights","nn_reporting"],
     "data": [
         "views/product_template.xml",  # For XML field placement
+        "views/discount_product_tree.xml",  # For XML field placement
     ],
     "installable": True,
     "application": False,
