@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ========================================================= -->
+    <!-- 1) FORM VIEW - ADD SMARTBUTTONS + EXTRA FIELDS + MESSAGES -->
+    <!-- ========================================================= -->
+
+    <record id="view_mrp_production_form_cc_smartbutton" model="ir.ui.view">
+        <field name="name">mrp.production.collect.components.smartbutton</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- A) Add Custom Buttons in Header                       -->
+            <xpath expr="//header" position="inside">
+
+                <!-- Button: Return Components -->
+                <button name="return_components"
+                        type="object"
+                        class="btn-primary"
+                        string="Retourner les composants"
+                        attrs="{'invisible':[('state','not in',['cancel','done']),('has_leftovers','=',False)]}"/>
+
+                <!-- Button: Manual Collect -->
+                <button name="action_create_manual_collect"
+                        type="object"
+                        class="btn-primary"
+                        string="Collecte manuelle des composants"
+                        attrs="{'invisible':[('show_manual_collect','=',False)]}"/>
+            </xpath>
+
+
+            <!-- B) Add Technical Fields inside move_raw_ids tree      -->
+            <xpath expr="//field[@name='move_raw_ids']/tree" position="inside">
+                <field name="qty_delivered" optional="hide"/>
+                <field name="qty_needed" optional="hide"/>
+                <field name="qty_left" optional="hide"/>
+                <field name="qty_consumed_total" optional="hide"/>
+                <field name="qty_in_prod" optional="hide"/>
+                <field name="qty_returned" optional="hide"/>
+                <field name="qty_scraped" optional="hide"/>
+            </xpath>
+
+
+            <!-- C) Add a Technical Fields Page in Notebook            -->
+            <xpath expr="//notebook" position="inside">
+
+                <page string="Technical fields"
+                      groups="nn_collect_components.group_admin_tech_fields">
+
+                    <group string="Qty Trackers"
+                           groups="nn_collect_components.group_admin_tech_fields">
+
+                        <group>
+                            <field name="updating_cc_from_picking_ids"/>
+                            <field name="qty_left_trigger_update"/>
+                            <field name="qty_scraped"/>
+                        </group>
+
+                        <!-- Boolean / Selection fields block -->
+                        <div>
+                            <label for="ignore_component_check"
+                                   string="Ignorer la collecte des composants"/>
+                            <field name="ignore_component_check"/>
+
+                            <div/>
+                            <label for="no_back_order" string="No BackOrder"/>
+                            <field name="no_back_order"/>
+
+                            <div/>
+                            <label for="return_status"/>
+                            <field name="return_status"/>
+
+                            <div/>
+                            <label for="qty_returned"/>
+                            <field name="qty_returned"/>
+
+                            <div/>
+                            <label for="show_div_message"/>
+                            <field name="show_div_message"/>
+
+                            <div/>
+                            <label for="has_leftovers"/>
+                            <field name="has_leftovers"/>
+                            <div/>
+                            <label for="show_manual_collect"/>
+                            <field name="show_manual_collect"/>
+                            <div/>
+                            <label for="returned_components_count"/>
+                            <field name="returned_components_count"/>
+                            <div/>
+                            <label for="return_operation_count"/>
+                            <field name="return_operation_count"/>
+                        </div>
+
+                    </group>
+
+                    <!-- Scrap Records -->
+                    <label for="scrap_ids" string="Rebuts"/>
+                    <field name="scrap_ids"/>
+
+                </page>
+
+            </xpath>
+
+
+            <!-- D) Add Stat Button in Button Box (right panel)        -->
+            <xpath expr="//sheet/div[@name='button_box']" position="inside">
+<button name="action_view_total_return_operations"
+        type="object"
+        class="oe_stat_button"
+        icon="fa-refresh"
+        attrs="{'invisible': [('returned_components_count', '=', 0)]}">
+    <div class="o_stat_info">
+        <field name="returned_components_count" class="o_stat_value"/>
+        <span class="o_stat_text">Retours Totaux</span>
+    </div>
+</button>
+            </xpath>
+
+
+            <!-- E) Insert Warning/Success Messages Above Sheet        -->
+            <xpath expr="//sheet" position="before">
+
+                <!-- WARNING: Leftover components exist -->
+                <div attrs="{'invisible':[('has_leftovers','=',False)]}"
+                     class="alert alert-danger"
+                     style="font-size:16px; font-weight:bold; padding:15px; margin:15px; border-radius:10px;">
+
+                    ⚠️ Vous avez fermé l’Ordre de Fabrication (OF),
+                    mais il reste encore des composants non consommés.
+                    <br/>
+                    <br/>
+
+                    <strong>Détails :</strong>
+                    <field name="leftover_lines_info"/>
+                </div>
+
+                <!-- SUCCESS: No leftovers after MO is done -->
+                <div attrs="{'invisible':[('show_div_message','=','hide')]}"
+                     class="alert alert-success"
+                     style="font-size:16px; font-weight:bold; padding:15px; margin:15px; border-radius:10px;">
+
+                    ✔️ Aucun composant en reste.
+                    Vous avez correctement consommé tous les composants.
+                </div>
+
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- ========================================================= -->
+    <!-- 2) TREE VIEW - DISPLAY RETURN STATUS + COLOR DECORATION   -->
+    <!-- ========================================================= -->
+
+    <record id="mrp_production_tree_view_inherit_return_color" model="ir.ui.view">
+        <field name="name">mrp.production.tree.return.color</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Add return status column -->
+            <xpath expr="//tree" position="inside">
+                <field name="return_status" optional="hide"/>
+            </xpath>
+
+            <!-- Highlight rows in red when components are NOT returned -->
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-danger">
+                    return_status == 'not_returned'
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <!-- ========================================================= -->
+    <!-- 3) SEARCH VIEW - ADD FILTERS FOR RETURN STATUS            -->
+    <!-- ========================================================= -->
+
+    <record id="mrp_production_filter_inherit_return_status" model="ir.ui.view">
+        <field name="name">mrp.production.search.return.status</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.view_mrp_production_filter"/>
+        <field name="arch" type="xml">
+
+            <!-- Custom Filters -->
+            <xpath expr="//search" position="inside">
+
+                <filter string="Retourné"
+                        name="returned_filter"
+                        domain="[('return_status','=','returned')]"/>
+
+                <filter string="Non Retourné"
+                        name="not_returned_filter"
+                        domain="[('return_status','=','not_returned')]"/>
+
+                <filter string="Retour non nécessaire"
+                        name="return_not_needed_filter"
+                        domain="[('return_status','=','return_not_needed')]"/>
+            </xpath>
+
+            <!-- Group By return_status -->
+            <xpath expr="//group/filter[@name='status']" position="after">
+                <filter name="group_return_status"
+                        string="Statut du Retour"
+                        context="{'group_by':'return_status'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

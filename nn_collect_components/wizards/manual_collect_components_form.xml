@@ -1,0 +1,31 @@
+<odoo>
+    <record id="view_mrp_return_components_wizard_form" model="ir.ui.view">
+        <field name="name">mrp.return.components.wizard.form</field>
+        <field name="model">mrp.manual.collect.components.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Retour composants">
+                <group>
+                    <field name="production_id" readonly="True"/>
+                </group>
+                <field name="line_ids" nolabel="1">
+                    <tree editable="bottom" create="false">
+                        <field name="product_id"/>
+                        <field name="qty_to_collect"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button string="Confirmer" type="object" name="action_confirm" class="oe_highlight"/>
+                    <button string="Annuler" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mrp_return_components_wizard" model="ir.actions.act_window">
+        <field name="name">Retour composants</field>
+        <field name="res_model">mrp.manual.collect.components.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

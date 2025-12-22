@@ -1,0 +1,56 @@
+<odoo>
+    <data>
+        <record id="view_mrp_production_form_inherit_bom_domain" model="ir.ui.view">
+            <field name="name">mrp.production.form.inherit.bom.domain</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bom_id']" position="replace">
+                    <!--                    <field name="bom_id"-->
+                    <!--                           domain="[('product_tmpl_id', '=', product_tmpl_id), ('state', '=', 'done')]"-->
+                    <!--                           context="{'sort': 'date_validation desc'}" options="{'no_create':True}"/>-->
+                </xpath>
+                <xpath expr="//label[@for='product_qty']" position="before">
+                    <field name="bom_id"
+                           domain="[('product_tmpl_id', '=', product_tmpl_id), ('state', '=', 'done')]"
+                           context="{'sort': 'date_validation desc'}" options="{'no_create':True}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Inherit the existing BOM search view and add the filter for 'date_validation' -->
+        <record id="view_mrp_bom_filter_inherited" model="ir.ui.view">
+            <field name="name">mrp.bom.select.inherited</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.view_mrp_bom_filter"/>
+            <field name="arch" type="xml">
+
+
+                <xpath expr="//search" position="inside">
+
+                    <!-- Separator before Status group -->
+
+                    <!-- State filters below the separator -->
+                    <filter string="En Attente de Validation" name="state_waiting_for_validation"
+                            domain="[('state', '=', 'waiting_for_validation')]"/>
+                    <filter string="Validé" name="state_done" domain="[('state', '=', 'done')]"/>
+
+                </xpath>
+                <xpath expr="//search/filter[@name='inactive']" position="replace">
+
+                </xpath>
+                <xpath expr="//search/filter[@name='normal']" position="replace">
+
+                </xpath>
+                <xpath expr="//search/filter[@name='phantom']" position="replace">
+
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+    </data>
+</odoo>

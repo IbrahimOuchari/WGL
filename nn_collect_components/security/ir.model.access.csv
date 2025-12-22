@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mrp_return_components_wizard,mrp.return.components.wizard,model_mrp_return_components_wizard,,1,1,1,1
+access_mrp_return_components_line,mrp.return.components.line,model_mrp_return_components_line,,1,1,1,1
+
+access_mrp_manual_collect_components_wizard,mrp.manual.collect.components.wizard,model_mrp_manual_collect_components_wizard,,1,1,1,1
+access_mrp_manual_collect_components_line,mrp.manual.components.line,model_mrp_manual_collect_components_line,,1,1,1,1
+
+mrp.access_mrp_bom_manager,mrp.bom.manager,model_mrp_bom,nn_collect_components.group_mrp_bom_readonly,1,0,0,0
+mrp.access_mrp_bom_manager,mrp.bom.manager,model_mrp_bom,mrp.group_mrp_manager,1,1,1,1
