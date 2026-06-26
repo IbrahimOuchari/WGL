@@ -112,11 +112,22 @@ class MrpProduction(models.Model):
         string="Info des restes",
         compute="compute_has_leftovers",
     )
+    manual_return = fields.Boolean(string="Manual Rt",default=False)
 
-    @api.depends('state', 'move_raw_ids.qty_in_prod')
+    @api.depends(
+        'state',
+        'no_back_order',
+        'move_raw_ids.qty_in_prod',
+        'move_raw_ids.qty_returned',
+        'move_raw_ids.qty_scraped',
+        'picking_ids.state',  # ← forces re-run when pickings change
+        'scrap_ids',  # ← forces re-run when scraps change
+        'returned_components_count','manual_return'  # ← ensures returned count is settled first
+    )
     def compute_has_leftovers(self):
         for rec in self:
             leftover_lines = self.env['stock.move']  # empty recordset by default
+
 
             # ------------------------------
             # CASE 1: DONE + NO BACK ORDER
@@ -181,6 +192,12 @@ class MrpProduction(models.Model):
 
             # Show warning message if leftovers exist
             rec.show_div_message = 'hide' if leftover_lines else 'show'
+            if rec.manual_return:
+                print(f"Manual Rt: {rec.manual_return},")
+                leftover_lines = False
+                rec.leftover_lines_info = False
+                rec.has_leftovers = False
+                print(f"Left over lines info: {rec.leftover_lines_info},Has left over : {rec.has_leftovers}")
 
     # ------------------------------------------------------------
     #   Quantity returned
@@ -202,7 +219,7 @@ class MrpProduction(models.Model):
     #   Compute: qty_returned updates
     # ------------------------------------------------------------
 
-    @api.depends('picking_ids', 'picking_ids.state', 'move_raw_ids.qty_in_prod')
+    @api.depends('picking_ids', 'picking_ids.state', 'move_raw_ids.qty_in_prod','manual_return')
     def compute_update_returned(self):
         for rec in self:
             print("=======================_compute_update_returned================================")
@@ -404,12 +421,10 @@ class MrpProduction(models.Model):
                 continue
 
             blocking_msgs = []
-
             for move in mrp.move_raw_ids:
                 product = move.product_id.display_name
-                # Needed quantity: always fallback to product UOM if not explicitly set
                 needed = float(move.qty_needed or move.product_uom_qty or 0.0)
-                current = float(move.qty_in_prod)  # If qty_in_prod is 0, assume full needed quantity
+                current = float(move.qty_in_prod)
 
                 # Stage 1: No delivered quantity
                 if current <= 0.0:
@@ -432,12 +447,14 @@ class MrpProduction(models.Model):
 
             if blocking_msgs:
                 raise UserError(_("❌ Erreurs de validation :\n\n%s") % "\n\n".join(blocking_msgs))
-            res = super(MrpProduction, self).button_mark_done()
-            for production in self:
-                # Detect if validation is done WITHOUT creating a backorder
-                if production.env.context.get('skip_backorder'):
-                    production.no_back_order = True
-        # This MO is being validated WITHOUT backorder
+
+        # Always call super() - this is the key fix
+        res = super(MrpProduction, self).button_mark_done()
+
+        for production in self:
+            # Detect if validation is done WITHOUT creating a backorder
+            if production.env.context.get('skip_backorder'):
+                production.no_back_order = True
 
         return res
 
@@ -461,6 +478,7 @@ class MrpProduction(models.Model):
             if mrp.env.context.get('skip_backorder'):
                 mrp.no_back_order = True
             return res
+        self.compute_has_leftovers()
 
         return None
 
@@ -543,7 +561,7 @@ class MrpProduction(models.Model):
     def return_components(self):
         self.ensure_one()
 
-        picking_in_progress = self.picking_ids.filtered(lambda p: p.state != 'done')
+        picking_in_progress = self.picking_ids.filtered(lambda p: p.state not in [ 'done','cancel'])
 
         if self.state not in ['done', 'cancel']:
             raise UserError(
@@ -619,21 +637,53 @@ class MrpProduction(models.Model):
     show_manual_collect = fields.Boolean(string="Show Manual Collect", default=True,
                                          compute='_compute_show_manual_collect')
 
-    @api.depends('move_raw_ids', 'move_raw_ids.qty_left', 'delivery_count')
+    @api.depends('move_raw_ids', 'delivery_count')
     def _compute_show_manual_collect(self):
         for rec in self:
+
             # Default value (important to avoid failed assignment)
             # Only compute for these states
-            if rec.state in ['confirmed', 'progress', 'to_closer'] and rec.delivery_count > 1:
+            if rec.state in ['confirmed', 'progress' ,'to_close'] and rec.delivery_count > 1:
+                for line in rec.move_raw_ids:
+                    needed = float(line.qty_needed or self.product_uom_qty or 0.0)
+                    current = float(line.qty_in_prod)
+                    print('=========================================')
+                    print (f"Needed {needed} current [{current}]")
+                    print('=========================================')
+
                 # If ANY move has qty_left <= 0 → show the button
-                if any(move.qty_left <= 0 for move in rec.move_raw_ids):
+                if any(move.qty_left <= 0 for move in rec.move_raw_ids) and any(move.qty_scraped > 0 for move in rec.move_raw_ids):
                     rec.show_manual_collect = True
                 else:
                     rec.show_manual_collect = False
 
             else:
                 rec.show_manual_collect = False
+    def action_show_manual_collect(self):
+        for rec in self:
+            print("=========================== action_show_manual_collect ========================= ")
+            print(f"State : {rec.state} and Delivery Count {rec.delivery_count}")
+            print("=========================== action_show_manual_collect ========================= ")
+            for line in rec.move_raw_ids:
+                needed = float(line.qty_needed or self.product_uom_qty or 0.0)
+                current = float(line.qty_in_prod)
+                print('=========================================')
+                print(f"Needed {needed} current [{current}]")
+                print(f"Missing {needed - current}")
+                print('=========================================')
+            # Default value (important to avoid failed assignment)
+            # Only compute for these states
+            if rec.state in ['confirmed', 'progress' ,'to_close'] and rec.delivery_count > 1:
 
+
+                # If ANY move has qty_left <= 0 → show the button
+                if any(move.qty_left <= 0 for move in rec.move_raw_ids) and any(move.qty_scraped > 0 for move in rec.move_raw_ids):
+                    rec.show_manual_collect = True
+                else:
+                    rec.show_manual_collect = False
+
+            else:
+                rec.show_manual_collect = False
     def action_create_manual_collect(self):
         self.ensure_one()
         picking = self.env['stock.picking']
@@ -711,7 +761,7 @@ class MrpProduction(models.Model):
             ]
             _logger.info(f"Domain: {domain}")
             bom = self.env['mrp.bom'].search(domain, limit=1)
-            if bom:
+            if bom and self.state != 'done':
                 self.bom_id = bom.id
                 self.product_qty = bom.product_qty
                 self.product_uom_id = bom.product_uom_id.id
@@ -726,3 +776,6 @@ class MrpProduction(models.Model):
         # Always reset BOM when product changes
         self.bom_id = False
 
+    def action_state_draft(self):
+        for rec in self:
+            rec.state = 'draft'

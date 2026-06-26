@@ -10,6 +10,10 @@
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
         <field name="arch" type="xml">
+                        <xpath expr="//field[@name='product_id']"
+                   position="attributes">
+                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+            </xpath>
 
             <!-- A) Add Custom Buttons in Header                       -->
             <xpath expr="//header" position="inside">
@@ -27,9 +31,30 @@
                         class="btn-primary"
                         string="Collecte manuelle des composants"
                         attrs="{'invisible':[('show_manual_collect','=',False)]}"/>
+                <button name="action_state_draft"
+                        type="object"
+                        class="btn-primary"
+                        string="Brouillon"
+                        invisible="1"
+                />                <button name="action_show_manual_collect"
+                        type="object"
+                        class="btn-primary"
+                        string="Show Manual Collect"
+                        invisible="0"
+                />
+
+
             </xpath>
 
-
+            <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='product_uom_qty']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='quantity_done']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_raw_ids']/tree/field[@name='forecast_availability']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
             <!-- B) Add Technical Fields inside move_raw_ids tree      -->
             <xpath expr="//field[@name='move_raw_ids']/tree" position="inside">
                 <field name="qty_delivered" optional="hide"/>
@@ -39,6 +64,9 @@
                 <field name="qty_in_prod" optional="hide"/>
                 <field name="qty_returned" optional="hide"/>
                 <field name="qty_scraped" optional="hide"/>
+                <field name="forecast_availability" optional="hide"/>
+                <field name="state" optional="hide"/>
+
             </xpath>
 
 
@@ -47,7 +75,9 @@
 
                 <page string="Technical fields"
                       groups="nn_collect_components.group_admin_tech_fields">
-
+                    <group>
+                        <field name="product_qty"/>
+                    </group>
                     <group string="Qty Trackers"
                            groups="nn_collect_components.group_admin_tech_fields">
 
@@ -81,7 +111,10 @@
 
                             <div/>
                             <label for="has_leftovers"/>
-                            <field name="has_leftovers"/>
+                            <field name="has_leftovers" readonly="False"/>
+                            <div/>
+                            <label for="manual_return"/>
+                            <field name="manual_return" readonly="False"/>
                             <div/>
                             <label for="show_manual_collect"/>
                             <field name="show_manual_collect"/>
@@ -106,16 +139,16 @@
 
             <!-- D) Add Stat Button in Button Box (right panel)        -->
             <xpath expr="//sheet/div[@name='button_box']" position="inside">
-<button name="action_view_total_return_operations"
-        type="object"
-        class="oe_stat_button"
-        icon="fa-refresh"
-        attrs="{'invisible': [('returned_components_count', '=', 0)]}">
-    <div class="o_stat_info">
-        <field name="returned_components_count" class="o_stat_value"/>
-        <span class="o_stat_text">Retours Totaux</span>
-    </div>
-</button>
+                <button name="action_view_total_return_operations"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-refresh"
+                        attrs="{'invisible': [('returned_components_count', '=', 0)]}">
+                    <div class="o_stat_info">
+                        <field name="returned_components_count" class="o_stat_value"/>
+                        <span class="o_stat_text">Retours Totaux</span>
+                    </div>
+                </button>
             </xpath>
 
 

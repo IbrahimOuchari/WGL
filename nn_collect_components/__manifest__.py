@@ -28,6 +28,7 @@ This module adds a new operation in the Manufacturing (MRP) workflow to:
     "data": [
         # security
         # security
+        "data/validate_bom.xml",
         "security/groups.xml",
         "security/ir.model.access.csv",
 

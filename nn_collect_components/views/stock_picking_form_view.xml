@@ -11,7 +11,7 @@
                 <!-- Example: Add a new field below the partner_id -->
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="is_returned_qty_applied" invisible="1"/>
-                    <field name="manual_collect" invisible="0"/>
+                    <field name="manual_collect" invisible="1"/>
                 </xpath>
 
 
